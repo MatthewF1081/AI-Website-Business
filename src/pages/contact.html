@@ -1,0 +1,116 @@
+<!--{"nav":"contact","title":"Contact Us | Get a Free Website Quote | TradeSite Studio","description":"Get a free website plan and quote for your HVAC, plumbing or roofing company. Call, text or fill out the form and we'll reply within one business day."}-->
+    <section class="page-hero">
+      <div class="container">
+        <span class="eyebrow">Contact</span>
+        <h1>Get your free website quote</h1>
+        <p class="lead">Tell us a bit about your company. We'll reply within one business day with a recommended package and a written quote.</p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="container contact-grid">
+        <div class="form-card">
+          <form data-lead-form="contact-page" novalidate>
+            <div class="form-grid two">
+              <div class="field">
+                <label for="name">Your name<span class="req" aria-hidden="true">*</span></label>
+                <input id="name" name="name" type="text" autocomplete="name" required data-label="Your name" aria-describedby="name-error">
+                <span class="error" id="name-error" aria-live="polite"></span>
+              </div>
+              <div class="field">
+                <label for="company">Company name<span class="req" aria-hidden="true">*</span></label>
+                <input id="company" name="company" type="text" autocomplete="organization" required data-label="Company name" aria-describedby="company-error">
+                <span class="error" id="company-error" aria-live="polite"></span>
+              </div>
+              <div class="field">
+                <label for="phone">Phone<span class="req" aria-hidden="true">*</span></label>
+                <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" required pattern="[0-9 \(\)\+\.\-]{10,}" data-label="Phone" aria-describedby="phone-error">
+                <span class="error" id="phone-error" aria-live="polite"></span>
+              </div>
+              <div class="field">
+                <label for="email">Email<span class="req" aria-hidden="true">*</span></label>
+                <input id="email" name="email" type="email" autocomplete="email" required data-label="Email" aria-describedby="email-error">
+                <span class="error" id="email-error" aria-live="polite"></span>
+              </div>
+
+              <fieldset class="field full">
+                <legend>Your trade</legend>
+                <div class="option-grid">
+                  <label class="option"><input type="checkbox" name="trade" value="HVAC"><span>{{icon:thermometer}}HVAC</span></label>
+                  <label class="option"><input type="checkbox" name="trade" value="Plumbing"><span>{{icon:droplet}}Plumbing</span></label>
+                  <label class="option"><input type="checkbox" name="trade" value="Roofing"><span>{{icon:roof}}Roofing</span></label>
+                  <label class="option"><input type="checkbox" name="trade" value="Other"><span>{{icon:wrench}}Other</span></label>
+                </div>
+              </fieldset>
+
+              <div class="field">
+                <label for="package">Package you're interested in</label>
+                <select id="package" name="package">
+                  <option value="">Not sure yet</option>
+                  <option value="Launch">Launch · $1,497</option>
+                  <option value="Growth">Growth · $2,997</option>
+                  <option value="Pro">Pro · $4,997</option>
+                  <option value="Custom AI System">Custom AI System · from $9,997</option>
+                  <option value="Care">Care plan · $149/mo</option>
+                  <option value="Leads">Leads plan · $697/mo</option>
+                  <option value="Dominate">Dominate plan · $1,497/mo</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="timeline">When do you want to launch?</label>
+                <select id="timeline" name="timeline">
+                  <option value="">Choose one</option>
+                  <option>As soon as possible</option>
+                  <option>Within a month</option>
+                  <option>In 1 to 3 months</option>
+                  <option>Just researching</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="website">Current website <span class="muted small">(optional)</span></label>
+                <input id="website" name="website" type="url" inputmode="url" autocomplete="url" placeholder="https://" data-label="Website" aria-describedby="website-error">
+                <span class="error" id="website-error" aria-live="polite"></span>
+              </div>
+              <div class="field">
+                <label for="area">Main service area</label>
+                <input id="area" name="area" type="text" autocomplete="address-level2" aria-describedby="area-hint">
+                <span class="hint" id="area-hint">City or region, like "Tampa Bay".</span>
+              </div>
+              <div class="field full">
+                <label for="message">Anything else we should know?</label>
+                <textarea id="message" name="message" rows="4"></textarea>
+              </div>
+              <div style="position:absolute;left:-9999px" aria-hidden="true">
+                <label for="website_hp">Leave this empty</label>
+                <input id="website_hp" name="website_hp" type="text" tabindex="-1" autocomplete="off">
+              </div>
+              <div class="full">
+                <button class="btn btn-primary btn-block" type="submit">Send my request {{icon:arrow}}</button>
+                <p class="muted small" style="margin:12px 0 0;text-align:center">No spam. We'll only use your details to reply to this request.</p>
+                <div class="form-status" role="status" tabindex="-1"></div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <aside>
+          <h2 style="font-size:1.5rem">Rather talk now?</h2>
+          <p class="muted">Call or text. We answer during business hours and reply to texts fast.</p>
+          <div class="contact-methods">
+            <a class="contact-method" href="tel:{{phoneHref}}"><span class="icon-badge">{{icon:phone}}</span><div><b>Call us</b><span>{{phone}}</span></div></a>
+            <a class="contact-method" href="{{sms}}"><span class="icon-badge">{{icon:message}}</span><div><b>Text us</b><span>{{phone}}</span></div></a>
+            <a class="contact-method" href="mailto:{{email}}"><span class="icon-badge">{{icon:mail}}</span><div><b>Email us</b><span>{{email}}</span></div></a>
+            <div class="contact-method"><span class="icon-badge">{{icon:clock}}</span><div><b>Hours</b><span>{{hours}}</span></div></div>
+            <div class="contact-method"><span class="icon-badge">{{icon:pin}}</span><div><b>Where we work</b><span>{{city}}</span></div></div>
+          </div>
+          <div class="card" style="margin-top:16px">
+            <h3>What happens next</h3>
+            <ul class="check-list">
+              <li>{{icon:check}}<span>We review your request and current site</span></li>
+              <li>{{icon:check}}<span>We reply within one business day</span></li>
+              <li>{{icon:check}}<span>You get a free plan and written quote</span></li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </section>
