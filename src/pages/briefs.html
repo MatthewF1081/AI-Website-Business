@@ -1,0 +1,117 @@
+<!--{"nav":"briefs","standalone":true}-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Client Briefs | {{brand}}</title>
+  <meta name="theme-color" content="#3b1812">
+  <link rel="icon" href="{{favicon}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/crm.css">
+  <link rel="stylesheet" href="assets/briefs.css">
+</head>
+<body class="crm-body">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="crm-top">
+    <div class="crm-top-inner">
+      <a class="logo" href="crm.html" aria-label="Back to the lead CRM">
+        <span class="logo-mark">{{icon:logo}}</span>
+        <span class="crm-title">Client briefs</span>
+      </a>
+      <div class="crm-top-actions" id="top-actions" hidden>
+        <a class="btn btn-outline btn-sm" href="crm.html"><span>Leads</span></a>
+        <button class="btn btn-outline btn-sm" type="button" id="signout-btn" hidden><span>Sign out</span></button>
+        <button class="btn btn-accent btn-sm" type="button" id="export-btn">{{icon:sheet}}<span class="hide-sm">Export to Excel</span><span class="sr-only show-sm-sr">Export to Excel</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="crm-main">
+    <div class="crm-loading" id="loading"><span class="spinner" aria-hidden="true"></span>Loading…</div>
+
+    <section class="auth-view" id="auth-view" hidden aria-labelledby="auth-title">
+      <div class="auth-card">
+        <span class="icon-badge">{{icon:lock}}</span>
+        <h1 id="auth-title">Team sign in</h1>
+        <form id="login-form" novalidate>
+          <p class="muted">Use your Lead CRM login to see client briefs.</p>
+          <div class="form-grid">
+            <div class="field">
+              <label for="login-email">Email</label>
+              <input id="login-email" type="email" autocomplete="username" required>
+            </div>
+            <div class="field">
+              <label for="login-password">Password</label>
+              <input id="login-password" type="password" autocomplete="current-password" required>
+            </div>
+            <div class="form-status" id="login-status" role="alert" tabindex="-1"></div>
+            <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+          </div>
+        </form>
+        <div id="denied" hidden>
+          <p class="muted">You're signed in as <b id="denied-email"></b>, but this email isn't on the team list yet. Add it to the <code>team_members</code> table in Supabase (see the README), then reload this page.</p>
+          <button class="btn btn-outline btn-block" type="button" id="denied-signout">Sign out</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="app-view" hidden>
+      <div class="crm-notice" id="local-notice" hidden>
+        {{icon:shield}}
+        <p><b>Browser-only mode.</b> The database isn't connected, so briefs sent from this browser show here and images aren't uploaded. See the README to connect it.</p>
+      </div>
+
+      <section class="card bf-send" aria-labelledby="send-title">
+        <h2 id="send-title">Send the questionnaire to a client</h2>
+        <p class="muted">Fill in what you know and we'll make a personal link with their details already filled in. Or just copy the plain link.</p>
+        <div class="form-grid bf-send-grid">
+          <div class="field"><label for="s-business">Business name</label><input id="s-business" type="text" autocomplete="off"></div>
+          <div class="field"><label for="s-name">Contact name</label><input id="s-name" type="text" autocomplete="off"></div>
+          <div class="field"><label for="s-email">Email</label><input id="s-email" type="email" autocomplete="off"></div>
+        </div>
+        <div class="field bf-link">
+          <label for="s-link">Link to send</label>
+          <div class="bf-link-row">
+            <input id="s-link" type="url" readonly>
+            <button class="btn btn-primary" type="button" id="copy-btn">{{icon:copy}}Copy link</button>
+            <a class="btn btn-outline" id="mail-btn" href="#" aria-disabled="false">{{icon:mail}}Email it</a>
+          </div>
+          <p class="crm-notice err bf-link-warn" id="s-link-warn" hidden>This page is open from a file on your computer, so a link from here wouldn't work for clients. Put your live questionnaire address in <code>QUESTIONNAIRE_URL</code> near the bottom of briefs.html, or open this page from your live site.</p>
+        </div>
+      </section>
+
+      <div class="bf-head">
+        <h2>Submitted briefs <span class="muted bf-total" id="bf-total"></span></h2>
+        <label class="sr-only" for="bf-search">Search briefs</label>
+        <input id="bf-search" type="search" placeholder="Search by name, business or email">
+      </div>
+      <div class="bf-layout">
+        <ul class="bf-list" id="bf-list" aria-label="Briefs"></ul>
+        <section class="card bf-detail" id="bf-detail" aria-live="polite" tabindex="-1">
+          <p class="muted bf-placeholder">{{icon:inbox}}Pick a brief to see the answers and images.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    // The live web address of your questionnaire, e.g. "https://www.yourcompany.com/onboarding.html".
+    // Used for the link you send clients. Leave empty to use the address this page is opened from.
+    window.QUESTIONNAIRE_URL = "";
+  </script>
+  <script>window.SITE_CONFIG = {{config}};</script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js"></script>
+  <script>window.BF_ICONS = { mail: `{{icon:mail}}`, phone: `{{icon:phone}}`, printer: `{{icon:printer}}`, trash: `{{icon:trash}}`, image: `{{icon:image}}`, sheet: `{{icon:sheet}}` };</script>
+  <script src="assets/brief-questions.js"></script>
+  <script src="assets/leads.js"></script>
+  <script src="assets/briefs.js"></script>
+</body>
+</html>

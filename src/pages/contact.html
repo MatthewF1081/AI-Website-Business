@@ -43,19 +43,65 @@
                 </div>
               </fieldset>
 
-              <div class="field">
-                <label for="package">Package you're interested in</label>
-                <select id="package" name="package">
-                  <option value="">Not sure yet</option>
-                  <option value="Launch">Launch · $1,497</option>
-                  <option value="Growth">Growth · $2,997</option>
-                  <option value="Pro">Pro · $4,997</option>
-                  <option value="Custom AI System">Custom AI System · from $9,997</option>
-                  <option value="Care">Care plan · $149/mo</option>
-                  <option value="Leads">Leads plan · $697/mo</option>
-                  <option value="Dominate">Dominate plan · $1,497/mo</option>
-                </select>
+              <div class="full choose">
+                <h2 class="choose-title">What are you interested in?</h2>
+                <p class="muted small choose-intro">All three parts are optional. Not sure? Leave them blank and we'll recommend the right mix. <a href="services.html">Compare prices</a></p>
+
+                <div class="choose-part">
+                  <div class="choose-head">
+                    <span class="choose-num" aria-hidden="true">1</span>
+                    <div>
+                      <label for="package">Website package <span class="choose-tag">One-time build</span></label>
+                      <p class="hint" id="package-hint">We design and build your website. You pay once: 50% to start, 50% at launch.</p>
+                    </div>
+                  </div>
+                  <select id="package" name="package" aria-describedby="package-hint">
+                    <option value="">Not sure yet</option>
+                    <option value="Starter">Starter · $997 · about 5 pages</option>
+                    <option value="Standard">Standard · $1,997 · about 10 pages</option>
+                    <option value="Plus">Plus · $3,497 · about 15 pages</option>
+                  </select>
+                </div>
+
+                <div class="choose-part">
+                  <div class="choose-head">
+                    <span class="choose-num" aria-hidden="true">2</span>
+                    <div>
+                      <label for="plan">Monthly care plan <span class="choose-tag">Ongoing, after launch</span></label>
+                      <p class="hint" id="plan-hint">Keeps your site hosted, secure and bringing in leads. Billed monthly. Your first month of Care is free with any build.</p>
+                    </div>
+                  </div>
+                  <select id="plan" name="plan" aria-describedby="plan-hint">
+                    <option value="">Not sure yet</option>
+                    <option value="None">No monthly plan</option>
+                    <option value="Care">Care · $99/mo · hosting, security, backups, 1 edit a month</option>
+                    <option value="Growth">Growth · $397/mo · Care + text-back, review requests, Google posts, call tracking</option>
+                  </select>
+                </div>
+
+                <fieldset class="choose-part" aria-labelledby="addon-label" aria-describedby="addon-hint">
+                  <div class="choose-head">
+                    <span class="choose-num" aria-hidden="true">3</span>
+                    <div>
+                      <span class="choose-label" id="addon-label">Add-ons <span class="choose-tag">Optional extras</span></span>
+                      <p class="hint" id="addon-hint">Add to any package or plan. Pick as many as you like.</p>
+                    </div>
+                  </div>
+                  <div class="addon-list">
+                    <label class="addon"><input type="checkbox" name="addon" value="AI chatbot / after-hours capture"><span class="addon-name">AI chatbot or after-hours lead capture</span><span class="addon-price">$397 setup + $79/mo</span></label>
+                    <label class="addon"><input type="checkbox" name="addon" value="Missed-call text-back"><span class="addon-name">Missed-call text-back <small>(included in Growth)</small></span><span class="addon-price">$197 setup + $49/mo</span></label>
+                    <label class="addon"><input type="checkbox" name="addon" value="Review request automation"><span class="addon-name">Review request automation <small>(included in Growth)</small></span><span class="addon-price">$59/mo</span></label>
+                    <label class="addon"><input type="checkbox" name="addon" value="Extra service or city pages"><span class="addon-name">Extra service or city pages</span><span class="addon-price">$150 each</span></label>
+                    <label class="addon"><input type="checkbox" name="addon" value="Rush build"><span class="addon-name">Rush build (half the usual time)</span><span class="addon-price">+30%</span></label>
+                  </div>
+                </fieldset>
               </div>
+
+              <label class="founding-check full" for="founding">
+                <input type="checkbox" id="founding" name="founding" value="yes">
+                <span><b>Apply for the founding client offer</b> 30% off any package for our first 3 clients, in return for a testimonial, a Google review, portfolio rights and 3 months on Care or Growth. <a href="services.html#founding">Details</a></span>
+              </label>
+
               <div class="field">
                 <label for="timeline">When do you want to launch?</label>
                 <select id="timeline" name="timeline">
@@ -67,14 +113,14 @@
                 </select>
               </div>
               <div class="field">
-                <label for="website">Current website <span class="muted small">(optional)</span></label>
-                <input id="website" name="website" type="url" inputmode="url" autocomplete="url" placeholder="https://" data-label="Website" aria-describedby="website-error">
-                <span class="error" id="website-error" aria-live="polite"></span>
-              </div>
-              <div class="field">
                 <label for="area">Main service area</label>
                 <input id="area" name="area" type="text" autocomplete="address-level2" aria-describedby="area-hint">
                 <span class="hint" id="area-hint">City or region, like "Tampa Bay".</span>
+              </div>
+              <div class="field full">
+                <label for="website">Current website <span class="muted small">(optional)</span></label>
+                <input id="website" name="website" type="url" inputmode="url" autocomplete="url" placeholder="https://" data-label="Website" aria-describedby="website-error">
+                <span class="error" id="website-error" aria-live="polite"></span>
               </div>
               <div class="field full">
                 <label for="message">Anything else we should know?</label>

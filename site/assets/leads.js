@@ -25,11 +25,11 @@
   /* ---------- Field mapping (camelCase in the app, snake_case in the DB) ---------- */
   var COLUMNS = {
     id: "id", name: "name", company: "company", email: "email", phone: "phone",
-    trade: "trade", package: "package", website: "website", serviceArea: "service_area",
+    trade: "trade", package: "package", plan: "plan", addons: "addons", website: "website", serviceArea: "service_area",
     timeline: "timeline", message: "message", source: "source", stage: "stage",
     value: "value", followUp: "follow_up", notes: "notes", createdAt: "created_at"
   };
-  var PUBLIC_FIELDS = ["name", "company", "email", "phone", "trade", "package", "website", "serviceArea", "timeline", "message", "source"];
+  var PUBLIC_FIELDS = ["name", "company", "email", "phone", "trade", "package", "plan", "addons", "website", "serviceArea", "timeline", "message", "source"];
 
   function toRow(obj, fields) {
     var row = {};
@@ -212,6 +212,8 @@
     update: update,
     remove: remove,
     subscribe: subscribe,
-    auth: remote ? auth : null
+    auth: remote ? auth : null,
+    // Raw Supabase client for other team pages (client briefs).
+    db: remote ? db : null
   };
 })();

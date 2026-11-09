@@ -6,6 +6,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Lead CRM | TradeSite Studio</title>
   <meta name="theme-color" content="#3b1812">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2032%2032%22%3E%3Crect%20width%3D%2232%22%20height%3D%2232%22%20rx%3D%228%22%20fill%3D%22%233b1812%22%2F%3E%3Cg%20transform%3D%22translate(4%204)%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M3%2011%2012%204l9%207%22%2F%3E%3Cpath%20d%3D%22M6%2010v9h12v-9%22%2F%3E%3Cpath%20d%3D%22M10%2019v-5h4v5%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -22,6 +23,7 @@
         <span class="crm-title">Lead CRM</span>
       </a>
       <div class="crm-top-actions" id="top-actions" hidden>
+        <a class="btn btn-outline btn-sm" href="briefs.html"><span>Client briefs</span></a>
         <button class="btn btn-outline btn-sm" type="button" id="signout-btn" hidden><span>Sign out</span></button>
         <button class="btn btn-outline btn-sm" type="button" id="export-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg><span class="hide-sm">Export CSV</span><span class="sr-only show-sm-sr">Export CSV</span></button>
         <button class="btn btn-accent btn-sm" type="button" id="add-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="M12 5v14"/></svg>Add lead</button>
@@ -109,14 +111,16 @@
       </select>
       <label for="f-pkg" class="sr-only">Filter by package</label>
       <select id="f-pkg">
-        <option value="">All packages</option>
-        <option>Launch</option>
-        <option>Growth</option>
-        <option>Pro</option>
-        <option>Custom AI System</option>
-        <option>Care</option>
-        <option>Leads</option>
-        <option>Dominate</option>
+        <option value="">All packages &amp; plans</option>
+        <optgroup label="Website packages">
+          <option>Starter</option>
+          <option>Standard</option>
+          <option>Plus</option>
+        </optgroup>
+        <optgroup label="Monthly plans">
+          <option>Care</option>
+          <option>Growth</option>
+        </optgroup>
       </select>
       <div class="seg" role="group" aria-label="View">
         <button type="button" data-view="board" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="M15 3v18"/></svg><span>Board</span></button>
@@ -181,10 +185,22 @@
           <div class="field"><label for="l-email">Email</label><input id="l-email" name="email" type="email" autocomplete="off"></div>
           <div class="field"><label for="l-trade">Trade</label>
             <select id="l-trade" name="trade"><option value="">—</option><option>HVAC</option><option>Plumbing</option><option>Roofing</option><option>Other</option></select></div>
-          <div class="field"><label for="l-package">Package</label>
-            <select id="l-package" name="package"><option value="">Not sure yet</option><option>Launch</option><option>Growth</option><option>Pro</option><option>Custom AI System</option><option>Care</option><option>Leads</option><option>Dominate</option></select></div>
+          <div class="field"><label for="l-package">Website package <span class="muted small">(one-time)</span></label>
+            <select id="l-package" name="package"><option value="">Not sure yet</option><option>Starter</option><option>Standard</option><option>Plus</option></select></div>
+          <div class="field"><label for="l-plan">Monthly plan</label>
+            <select id="l-plan" name="plan"><option value="">Not sure yet</option><option>None</option><option>Care</option><option>Growth</option></select></div>
+          <fieldset class="field full crm-addons">
+            <legend>Add-ons</legend>
+            <div class="crm-addon-grid">
+              <label><input type="checkbox" name="addon" value="AI chatbot / after-hours capture"> AI chatbot / after-hours capture</label>
+              <label><input type="checkbox" name="addon" value="Missed-call text-back"> Missed-call text-back</label>
+              <label><input type="checkbox" name="addon" value="Review request automation"> Review request automation</label>
+              <label><input type="checkbox" name="addon" value="Extra service or city pages"> Extra service or city pages</label>
+              <label><input type="checkbox" name="addon" value="Rush build"> Rush build</label>
+            </div>
+          </fieldset>
           <div class="field"><label for="l-stage">Stage</label><select id="l-stage" name="stage"></select></div>
-          <div class="field"><label for="l-value">Deal value ($)</label><input id="l-value" name="value" type="number" min="0" step="1" inputmode="numeric"><span class="hint">Auto-fills from the package (monthly plans use 12 months). Edit if needed.</span></div>
+          <div class="field"><label for="l-value">Deal value ($)</label><input id="l-value" name="value" type="number" min="0" step="1" inputmode="numeric"><span class="hint">Auto-fills: package price + 12 months of the plan. Edit if needed.</span></div>
           <div class="field"><label for="l-area">Service area</label><input id="l-area" name="serviceArea" type="text" autocomplete="off"></div>
           <div class="field"><label for="l-followup">Follow-up date</label><input id="l-followup" name="followUp" type="date"></div>
           <div class="field full"><label for="l-message">Request / details</label><textarea id="l-message" name="message" rows="3"></textarea></div>
@@ -213,7 +229,7 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script>window.SITE_CONFIG = {"brand":"TradeSite Studio","phone":"(555) 010-2468","phoneHref":"+15550102468","supabaseUrl":"","supabaseAnonKey":"","formEndpoint":""};</script>
+  <script>window.SITE_CONFIG = {"brand":"TradeSite Studio","phone":"(555) 010-2468","phoneHref":"+15550102468","hours":"Mon–Fri, 8am–6pm","supabaseUrl":"https://mvgxflrqmlswrwwjuwdt.supabase.co","supabaseAnonKey":"sb_publishable_R8dMPd5W5AjCzkJliAG2Cg_KiBfMbNO","formEndpoint":"","sheetWebhook":"https://hook.eu1.make.com/er1llb4s9eq1ipmqa1rt9l5yrxqlvbe5"};</script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.0/dist/umd/supabase.js"></script>
   <script>window.CRM_ICONS ={ phone: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`, message: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`, mail: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>`, calendar: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>`, pin: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>` };</script>
   <script src="assets/leads.js"></script>
