@@ -46,7 +46,7 @@
 .crm-toolbar { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); margin-bottom: var(--space-5); }
 .crm-search { position: relative; grid-column: 1 / -1; }
 .crm-search svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--text-muted); pointer-events: none; }
-.crm-search input { padding-left: 42px; }
+.crm-search input[type="search"] { padding-left: 42px; }
 .seg { grid-column: 1 / -1; display: inline-flex; background: var(--surface-2); border-radius: 12px; padding: 4px; gap: 4px; }
 .seg button { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 0 14px; border: 0; border-radius: 9px; background: transparent; font: 600 .9375rem var(--font-body); color: var(--brand-800); cursor: pointer; }
 .seg button svg { width: 18px; height: 18px; }
@@ -93,6 +93,15 @@
 .lead-card .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
 .tag-sm { font-size: .75rem; font-weight: 600; padding: 2px 8px; border-radius: var(--radius-pill); background: var(--surface-2); color: var(--brand-800); }
 .tag-sm.pkg { background: var(--accent-100); color: #8a3a10; }
+.tag-sm.plan { background: var(--info-bg); color: var(--info); }
+.tag-sm.extra { background: var(--success-bg); color: var(--success); }
+.tag-sm.chat { background: var(--brand-800); color: #fff; }
+.tag-sm.founding { background: #fff3d6; color: #7a4800; border: 1px dashed #c58a00; }
+.crm-addons { border: 0; padding: 0; margin: 0; min-width: 0; }
+.crm-addon-grid { display: grid; gap: 6px; margin-top: 4px; }
+@media (min-width: 560px) { .crm-addon-grid { grid-template-columns: 1fr 1fr; } }
+.crm-addon-grid label { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 12px; background: #fff; border: 1.5px solid #d9cbbe; border-radius: 12px; font-size: .9375rem; font-weight: 500; color: var(--text); cursor: pointer; }
+.crm-addon-grid input { width: 18px; height: 18px; margin: 0; accent-color: var(--brand-800); }
 .tag-sm.due { background: var(--warn-bg); color: var(--warn); }
 .tag-sm.overdue { background: var(--danger-bg); color: var(--danger); }
 .lead-card .foot { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-top: 10px; font-size: .75rem; color: var(--text-muted); }

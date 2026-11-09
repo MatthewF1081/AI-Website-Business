@@ -1,0 +1,56 @@
+<!-- {
+  "title": "HVAC Service Areas | Oklahoma City, Bethany, Yukon, Edmond & More | Shadid Heat and Air",
+  "description": "Shadid Heat and Air serves the Oklahoma City metro: OKC, Bethany, Warr Acres, Yukon, Mustang, Edmond, The Village, Nichols Hills, Del City, Midwest City, Moore and Piedmont.",
+  "nav": "areas",
+  "crumb": "Service Areas",
+  "faqs": [
+    ["What if my city isn't listed?", "We cover the cities on this page every day. If you're just outside them, call or text and we'll let you know if we can get to you."],
+    ["Is my neighborhood in your service area?", "If you're in the Oklahoma City metro, almost certainly. We're based on NW 23rd St, close to Bethany and Warr Acres, and we travel across the metro every day."]
+  ]
+} -->
+<section class="page-hero page-hero--simple">
+  <div class="container">
+    <p class="eyebrow eyebrow--light">{{icon:pin}} Service areas</p>
+    <h1>Heating &amp; air conditioning across the Oklahoma City metro</h1>
+    <p class="lead">From our shop at {{address}}, we provide AC repair, furnace repair, new system installation, ductwork and tune-ups throughout central Oklahoma.</p>
+    <div class="hero__actions">
+      {{phoneBtn}}
+      <a class="btn btn--ghost-light btn--lg" href="contact.html">{{icon:clipboard}}<span>Free estimate</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Cities we serve</p>
+      <h2>Local heating &amp; cooling, wherever you are in the metro</h2>
+    </div>
+    <div class="area-grid">{{areaCards}}</div>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="container split split--top">
+    <div>
+      <p class="eyebrow">Find us</p>
+      <h2>Based in central Oklahoma City</h2>
+      <address class="nap" style="font-style:normal;margin-bottom:16px">
+        <strong>{{brand}}</strong><br>{{address}}<br>
+        <a href="tel:{{phoneHref}}" data-phone-link data-track="call"><span data-phone-text>{{phone}}</span></a>
+      </address>
+      <p class="muted">Every service, every city: AC repair, furnace and heat pump repair, new AC and furnace installation, ductwork repair and replacement, and seasonal maintenance.</p>
+      <ul class="link-list">
+        <li><a href="ac-repair.html">AC Repair {{icon:arrow}}</a></li>
+        <li><a href="heating-repair.html">Furnace &amp; Heating Repair {{icon:arrow}}</a></li>
+        <li><a href="hvac-installation.html">AC &amp; Furnace Installation {{icon:arrow}}</a></li>
+        <li><a href="ductwork.html">Ductwork {{icon:arrow}}</a></li>
+        <li><a href="hvac-maintenance.html">Maintenance &amp; Tune-Ups {{icon:arrow}}</a></li>
+      </ul>
+      <h2 style="margin-top:40px">Service area FAQ</h2>
+      {{faq:areas}}
+    </div>
+    <iframe class="map" title="Map of Shadid Heat and Air in Oklahoma City" src="{{mapEmbed}}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+</section>
+{{ctaBand}}

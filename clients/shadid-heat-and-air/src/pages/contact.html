@@ -1,0 +1,55 @@
+<!-- {
+  "title": "Book Service or Get a Free Estimate | Shadid Heat and Air, Oklahoma City",
+  "description": "Request a free HVAC estimate or book a service visit with Shadid Heat and Air in Oklahoma City. Call, text, or send the form and we'll get right back to you.",
+  "nav": "contact",
+  "crumb": "Contact",
+  "faqs": [
+    ["How quickly will you get back to me?", "During business hours we usually reply within the hour. Requests sent after hours are answered first thing the next business morning."],
+    ["Is the estimate really free?", "Yes — estimates for new systems and ductwork are free with no obligation. Repairs have a flat diagnostic fee, and you'll get the repair price before we start."],
+    ["Can I book a specific day?", "Choose \"Book a service visit\" on the form and pick a preferred day and time window. We'll call or text to confirm the exact arrival window."]
+  ]
+} -->
+<section class="page-hero">
+  <div class="container page-hero__grid">
+    <div>
+      <p class="eyebrow eyebrow--light">{{icon:calendar}} Book service · Free estimates</p>
+      <h1>Get a free estimate or book a visit</h1>
+      <p class="lead">Fill out the form and a real person from our team will get right back to you. In a hurry? Call or text — it's the fastest way to reach us.</p>
+      <div class="hero__actions">
+        {{phoneBtn}}
+        {{smsBtnDark}}
+      </div>
+      <ul class="hero__trust">
+        <li>{{icon:check-circle}} No-obligation estimates</li>
+        <li>{{icon:check-circle}} Upfront pricing</li>
+        <li>{{icon:check-circle}} Reply within 1 business hour</li>
+      </ul>
+    </div>
+    <div class="form-card" id="form">
+      <h2>Tell us what you need</h2>
+      <p class="form-card__sub">Fields marked <span class="req">*</span> are required.</p>
+      {{quoteForm}}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container split split--top">
+    <div>
+      <p class="eyebrow">Contact details</p>
+      <h2>Visit, call or text</h2>
+      <ul class="contact-list">
+        <li>{{icon:phone}}<span><strong>Phone</strong><a href="tel:{{phoneHref}}" data-phone-link data-track="call"><span data-phone-text>{{phone}}</span></a></span></li>
+        <li>{{icon:message}}<span><strong>Text</strong><a href="{{smsHref}}" data-sms-link data-track="sms">Send us a text</a></span></li>
+        <li>{{icon:mail}}<span><strong>Email</strong><a href="mailto:{{email}}">{{email}}</a></span></li>
+        <li>{{icon:pin}}<span><strong>Address</strong><a href="{{reviewsUrl}}" target="_blank" rel="noopener">{{address}}</a></span></li>
+        <li>{{icon:clock}}<span><strong>Hours</strong><ul style="list-style:none;padding:0;margin:0">{{hoursList}}</ul></span></li>
+      </ul>
+      <h2 style="margin-top:40px">Questions before you book</h2>
+      {{faq:contact}}
+    </div>
+    <div>
+      <iframe class="map" title="Map to Shadid Heat and Air, {{address}}" src="{{mapEmbed}}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </div>
+</section>

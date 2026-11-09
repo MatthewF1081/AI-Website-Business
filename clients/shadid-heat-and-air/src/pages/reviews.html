@@ -1,0 +1,55 @@
+<!-- {
+  "title": "Reviews | Shadid Heat and Air — Rated 4.8 on Google | Oklahoma City HVAC",
+  "description": "Read what Oklahoma City homeowners say about Shadid Heat and Air. Rated 4.8 out of 5 on Google for honest, communicative, fairly priced heating and air service.",
+  "nav": "reviews",
+  "crumb": "Reviews"
+} -->
+<section class="page-hero page-hero--simple">
+  <div class="container">
+    <p class="eyebrow eyebrow--light">{{icon:star}} Customer reviews</p>
+    <h1>Rated {{rating}} stars by Oklahoma City homeowners</h1>
+    <p class="lead">Honesty, fair pricing and going above and beyond — that's what our customers mention most.</p>
+    {{ratingBadgeDark}}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="review-summary">
+      <div>
+        <div class="review-summary__score"><strong>{{rating}}</strong><span><span class="stars" aria-hidden="true">{{icon:star}}{{icon:star}}{{icon:star}}{{icon:star}}{{icon:star}}</span><br>{{reviewCount}} Google reviews</span></div>
+        <h2>What customers mention most</h2>
+        <p>Fairness · Honesty · Family business · Going above and beyond</p>
+      </div>
+      <ul class="highlights">{{reviewHighlights}}</ul>
+    </div>
+    {{reviewCards}}
+    <div class="review-actions" style="margin-top:24px">
+      <a class="btn btn--outline" href="{{reviewsUrl}}" target="_blank" rel="noopener">{{icon:google}}<span>Read all reviews on Google</span>{{icon:external}}</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="container split">
+    <div>
+      <p class="eyebrow">Already a customer?</p>
+      <h2>We'd love to hear how we did</h2>
+      <p>Reviews help other Oklahoma City families find an honest heating and air company — and they mean a lot to a small family business like ours. It takes about a minute.</p>
+      <div class="review-actions">
+        <a class="btn btn--accent btn--lg" href="{{writeReviewUrl}}" target="_blank" rel="noopener">{{icon:star}}<span>Leave a Google review</span></a>
+      </div>
+      <p class="muted" style="margin-top:14px">Something not right? Please call us at <a href="tel:{{phoneHref}}" data-phone-link data-track="call"><span data-phone-text>{{phone}}</span></a> — we'll make it right.</p>
+    </div>
+    <div class="info-card">
+      <h3>{{icon:check-circle}} How to leave a review</h3>
+      <ol style="padding-left:20px;margin:0;display:grid;gap:8px">
+        <li>Tap <strong>Leave a Google review</strong>.</li>
+        <li>Sign in to your Google account if asked.</li>
+        <li>Pick your star rating and tell others about your visit — mentioning the service and your city really helps.</li>
+        <li>Tap <strong>Post</strong>. Thank you!</li>
+      </ol>
+    </div>
+  </div>
+</section>
+{{ctaBand}}

@@ -2,8 +2,23 @@
   var S = window.LeadStore;
   var ICON = window.CRM_ICONS || {};
   var STAGE_COLORS = { new: "#1d5fa8", contacted: "#c58a00", proposal: "#e0692a", won: "#1f7a4d", lost: "#9a8a80" };
-  // Monthly plans use their 12-month value.
-  var PACKAGE_VALUE = { "Launch": 1497, "Growth": 2997, "Pro": 4997, "Custom AI System": 9997, "Care": 1788, "Leads": 8364, "Dominate": 17964 };
+  var PACKAGE_VALUE = { "Starter": 997, "Standard": 1997, "Plus": 3497 };
+  // Monthly plans count as 12 months.
+  var PLAN_VALUE = { "Care": 99 * 12, "Growth": 397 * 12 };
+  var FOUNDING = "[Founding client offer]";
+
+  // The oldest leads stored a monthly plan in the package field; read them as plans.
+  function normalize(l) {
+    if (["Care", "Leads", "Dominate"].indexOf(l.package) !== -1 && !l.plan) l = Object.assign({}, l, { plan: l.package, package: "" });
+    return l;
+  }
+  function isFounding(l) { return (l.message || "").indexOf(FOUNDING) === 0; }
+  function autoValue(pkg, plan) {
+    return (PACKAGE_VALUE[pkg] || 0) + (PLAN_VALUE[plan] || 0);
+  }
+  function addonList(l) {
+    return (l.addons || "").split(",").map(function (a) { return a.trim(); }).filter(Boolean);
+  }
 
   var state = {
     view: "board",
@@ -43,7 +58,7 @@
     return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
   }
   function leadValue(l) {
-    return Number(l.value) || PACKAGE_VALUE[l.package] || 0;
+    return Number(l.value) || autoValue(l.package, l.plan);
   }
   function busy(btn, on, label) {
     if (on) {
@@ -73,7 +88,7 @@
   /* ---------- Data ---------- */
   function reload() {
     return S.list().then(function (all) {
-      leads = all;
+      leads = all.map(normalize);
       render();
     }).catch(function (err) {
       showNotice("err", "<b>Couldn't load leads.</b> " + esc(err.message) + " Check your Supabase settings in <code>build.js</code> and your internet connection, then reload.");
@@ -84,9 +99,9 @@
     var q = state.q.toLowerCase();
     return leads.filter(function (l) {
       if (state.trade && (l.trade || "").indexOf(state.trade) === -1) return false;
-      if (state.pkg && l.package !== state.pkg) return false;
+      if (state.pkg && l.package !== state.pkg && l.plan !== state.pkg) return false;
       if (q) {
-        var hay = [l.name, l.company, l.email, l.phone, l.serviceArea, l.message].join(" ").toLowerCase();
+        var hay = [l.name, l.company, l.email, l.phone, l.serviceArea, l.message, l.addons].join(" ").toLowerCase();
         if (hay.indexOf(q) === -1) return false;
       }
       return true;
@@ -130,7 +145,11 @@
       (leadValue(l) ? '<span class="val">' + money(leadValue(l)) + "</span>" : "") +
       '<div class="tags">' +
         trades.map(function (t) { return '<span class="tag-sm">' + esc(t) + "</span>"; }).join("") +
+        (isFounding(l) ? '<span class="tag-sm founding">Founding 30%</span>' : "") +
+        (l.source === "chatbot" ? '<span class="tag-sm chat">Chat</span>' : "") +
         (l.package ? '<span class="tag-sm pkg">' + esc(l.package) + "</span>" : "") +
+        (l.plan && l.plan !== "None" ? '<span class="tag-sm plan">' + esc(l.plan) + " plan</span>" : "") +
+        (addonList(l).length ? '<span class="tag-sm extra">+' + addonList(l).length + " add-on" + (addonList(l).length > 1 ? "s" : "") + "</span>" : "") +
         followTag(l) +
       "</div>" +
       '<div class="foot"><span>' + ago(l.createdAt) + "</span>" +
@@ -173,7 +192,8 @@
       return '<tr data-id="' + esc(l.id) + '">' +
         '<td><button type="button" class="lead-link">' + esc(l.name || "Unnamed lead") + '</button><span class="sub">' + esc(l.company || l.phone || l.email || "") + "</span></td>" +
         "<td>" + esc(l.trade || "—") + "</td>" +
-        "<td>" + esc(l.package || "—") + "</td>" +
+        "<td>" + esc([l.package, l.plan && l.plan !== "None" ? l.plan + " plan" : ""].filter(Boolean).join(" + ") || "—") +
+          (addonList(l).length ? '<span class="sub">+' + addonList(l).length + " add-on" + (addonList(l).length > 1 ? "s" : "") + "</span>" : "") + "</td>" +
         '<td><span class="stage-pill"><span class="dot" style="background:' + STAGE_COLORS[l.stage] + '"></span>' + stageLabel(l.stage) + "</span></td>" +
         '<td class="r">' + (leadValue(l) ? money(leadValue(l)) : "—") + "</td>" +
         '<td class="r">' + ago(l.createdAt) + "</td>" +
@@ -182,6 +202,7 @@
   }
 
   function render() {
+    leads = leads.map(normalize);
     var list = filtered();
     renderStats(leads);
     $("empty").hidden = leads.length > 0;
@@ -237,11 +258,13 @@
     $("delete-btn").hidden = !lead;
     $("notes-section").hidden = !lead;
     if (lead) {
-      ["name", "company", "phone", "email", "package", "stage", "serviceArea", "followUp", "message"].forEach(function (k) {
+      ["name", "company", "phone", "email", "package", "plan", "stage", "serviceArea", "followUp", "message"].forEach(function (k) {
         if (form.elements[k]) form.elements[k].value = lead[k] || "";
       });
       form.elements.trade.value = (lead.trade || "").split(",")[0].trim();
-      form.elements.value.value = lead.value || PACKAGE_VALUE[lead.package] || "";
+      var chosen = addonList(lead);
+      form.querySelectorAll('input[name="addon"]').forEach(function (c) { c.checked = chosen.indexOf(c.value) !== -1; });
+      form.elements.value.value = lead.value || autoValue(lead.package, lead.plan) || "";
     } else {
       form.elements.stage.value = state.view === "board" ? state.activeStage : "new";
     }
@@ -263,9 +286,11 @@
     if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
   }
 
-  form.elements.package.addEventListener("change", function () {
-    var v = PACKAGE_VALUE[form.elements.package.value];
-    if (v) form.elements.value.value = v;
+  [form.elements.package, form.elements.plan].forEach(function (sel) {
+    sel.addEventListener("change", function () {
+      var v = autoValue(form.elements.package.value, form.elements.plan.value);
+      if (v) form.elements.value.value = v;
+    });
   });
 
   form.addEventListener("submit", function (e) {
@@ -282,9 +307,10 @@
     nameField.classList.remove("invalid");
     $("l-name").setAttribute("aria-invalid", "false");
     var data = {};
-    ["name", "company", "phone", "email", "trade", "package", "stage", "serviceArea", "followUp", "message"].forEach(function (k) {
+    ["name", "company", "phone", "email", "trade", "package", "plan", "stage", "serviceArea", "followUp", "message"].forEach(function (k) {
       data[k] = (form.elements[k].value || "").trim();
     });
+    data.addons = [].map.call(form.querySelectorAll('input[name="addon"]:checked'), function (c) { return c.value; }).join(", ");
     data.value = Number(form.elements.value.value) || 0;
 
     var btn = form.querySelector('button[type="submit"]');
@@ -444,7 +470,7 @@
   /* ---------- Export ---------- */
   $("export-btn").addEventListener("click", function () {
     if (!leads.length) { toast("No leads to export yet"); return; }
-    var cols = ["name", "company", "phone", "email", "trade", "package", "stage", "value", "serviceArea", "website", "timeline", "followUp", "source", "message", "createdAt"];
+    var cols = ["name", "company", "phone", "email", "trade", "package", "plan", "addons", "stage", "value", "serviceArea", "website", "timeline", "followUp", "source", "message", "createdAt"];
     var cell = function (v) { v = v == null ? "" : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
     var rows = [cols.join(",")].concat(leads.map(function (l) {
       return cols.map(function (c) { return cell(c === "stage" ? stageLabel(l.stage) : c === "value" ? leadValue(l) : l[c]); }).join(",");
@@ -465,14 +491,14 @@
     var day = 86400000, now = Date.now();
     var iso = function (msAgo) { return new Date(now - msAgo).toISOString(); };
     var samples = [
-      { name: "Sample: Dana Ruiz", company: "Ruiz Heating & Air", phone: "555-201-1001", email: "dana@example.com", trade: "HVAC", package: "Growth", stage: "new", serviceArea: "Mesa, AZ", message: "Current site is 8 years old and not mobile friendly.", source: "sample", createdAt: iso(2 * 3600000) },
-      { name: "Sample: Marcus Lee", company: "Lee Plumbing Co.", phone: "555-201-1002", email: "marcus@example.com", trade: "Plumbing", package: "Launch", stage: "contacted", serviceArea: "Raleigh, NC", followUp: today(), source: "sample", createdAt: iso(2 * day) },
-      { name: "Sample: Tara Brooks", company: "Summit Roofing", phone: "555-201-1003", email: "tara@example.com", trade: "Roofing", package: "Pro", stage: "proposal", serviceArea: "Denver Metro", message: "Wants city pages for 6 suburbs.", source: "sample", createdAt: iso(5 * day) },
-      { name: "Sample: Jake Moreno", company: "Moreno Mechanical", phone: "555-201-1004", trade: "HVAC", package: "Leads", stage: "won", source: "sample", createdAt: iso(12 * day) },
-      { name: "Sample: Priya Shah", company: "FlowRight Drains", phone: "555-201-1005", trade: "Plumbing", package: "Custom AI System", stage: "proposal", message: "Uses ServiceTitan, wants AI follow-up.", source: "sample", createdAt: iso(3 * day) },
-      { name: "Sample: Ben Carter", company: "Carter Exteriors", phone: "555-201-1006", trade: "Roofing", package: "Launch", stage: "lost", source: "sample", createdAt: iso(20 * day) }
+      { name: "Sample: Dana Ruiz", company: "Ruiz Heating & Air", phone: "555-201-1001", email: "dana@example.com", trade: "HVAC", package: "Standard", stage: "new", serviceArea: "Mesa, AZ", message: "Current site is 8 years old and not mobile friendly.", source: "sample", createdAt: iso(2 * 3600000) },
+      { name: "Sample: Marcus Lee", company: "Lee Plumbing Co.", phone: "555-201-1002", email: "marcus@example.com", trade: "Plumbing", package: "Starter", stage: "contacted", serviceArea: "Raleigh, NC", followUp: today(), source: "sample", createdAt: iso(2 * day) },
+      { name: "Sample: Tara Brooks", company: "Summit Roofing", phone: "555-201-1003", email: "tara@example.com", trade: "Roofing", package: "Plus", stage: "proposal", serviceArea: "Denver Metro", message: "Wants city pages for 4 suburbs.", source: "sample", createdAt: iso(5 * day) },
+      { name: "Sample: Jake Moreno", company: "Moreno Mechanical", phone: "555-201-1004", trade: "HVAC", package: "Standard", plan: "Growth", addons: "AI chatbot / after-hours capture", stage: "won", source: "sample", createdAt: iso(12 * day) },
+      { name: "Sample: Priya Shah", company: "FlowRight Drains", phone: "555-201-1005", trade: "Plumbing", package: "Plus", plan: "Growth", stage: "proposal", message: "[Founding client offer] Uses Jobber, wants leads sent there.", source: "sample", createdAt: iso(3 * day) },
+      { name: "Sample: Ben Carter", company: "Carter Exteriors", phone: "555-201-1006", trade: "Roofing", package: "Starter", stage: "lost", source: "sample", createdAt: iso(20 * day) }
     ];
-    Promise.all(samples.map(function (s) { return S.add(Object.assign({ value: PACKAGE_VALUE[s.package] || 0 }, s)); }))
+    Promise.all(samples.map(function (s) { return S.add(Object.assign({ value: autoValue(s.package, s.plan) }, s)); }))
       .then(reload)
       .then(function () { toast("Sample leads loaded"); })
       .catch(fail);

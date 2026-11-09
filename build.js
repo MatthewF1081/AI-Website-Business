@@ -8,6 +8,7 @@
  * - Output is written to site/ (assets live in site/assets/ and are not touched).
  *
  * Tokens available in page files:
+ *   {{favicon}} -> the browser tab icon (for standalone pages)
  *   {{brand}} {{phone}} {{phoneHref}} {{sms}} {{email}} {{city}} {{year}}
  *   {{config}} -> public settings as JSON (for window.SITE_CONFIG)
  *   {{icon:name}}  -> inline SVG from ICONS
@@ -28,20 +29,26 @@ const SITE = {
   // Project Settings > API Keys: the Project URL and the publishable / anon
   // public key. Both are safe to put in a website; never use the secret or
   // service_role key here. Leave empty to keep leads in this browser only.
-  supabaseUrl: "",
-  supabaseAnonKey: "",
+  supabaseUrl: "https://mvgxflrqmlswrwwjuwdt.supabase.co",
+  supabaseAnonKey: "sb_publishable_R8dMPd5W5AjCzkJliAG2Cg_KiBfMbNO",
   // Optional: also POST each quote request here (e.g. a Formspree form) to get
   // an email notification for every new lead.
-  formEndpoint: ""
+  formEndpoint: "",
+  // Optional: a webhook URL from Make, Zapier or Power Automate. Every finished
+  // client questionnaire is POSTed here as one row (one field per question), so
+  // the connector can add it to an Excel spreadsheet. See README.md.
+  sheetWebhook: "https://hook.eu1.make.com/er1llb4s9eq1ipmqa1rt9l5yrxqlvbe5"
 };
 
 const PUBLIC_CONFIG = {
   brand: SITE.brand,
   phone: SITE.phone,
   phoneHref: SITE.phoneHref,
+  hours: SITE.hours,
   supabaseUrl: SITE.supabaseUrl.replace(/\/+$/, ""),
   supabaseAnonKey: SITE.supabaseAnonKey,
-  formEndpoint: SITE.formEndpoint
+  formEndpoint: SITE.formEndpoint,
+  sheetWebhook: SITE.sheetWebhook
 };
 
 const ICONS = {
@@ -89,8 +96,20 @@ const ICONS = {
   list: '<line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/>',
   lock: '<rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
   smartphone: '<rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/>',
-  link: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>'
+  link: '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+  pause: '<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',
+  play: '<polygon points="6 3 20 12 6 21 6 3"/>',
+  "left-right": '<path d="m9 7-5 5 5 5"/><path d="m15 7 5 5-5 5"/>',
+  upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>',
+  image: '<rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21"/>',
+  copy: '<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>',
+  printer: '<polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/>',
+  sheet: '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M8 13h8"/><path d="M8 17h8"/><path d="M12 11v8"/>',
+  inbox: '<polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>'
 };
+
+// Browser tab icon, shared by every page (standalone pages use {{favicon}}).
+const FAVICON = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#3b1812"/><g transform="translate(4 4)" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' + ICONS.logo + "</g></svg>");
 
 function icon(name) {
   if (!ICONS[name]) throw new Error("Unknown icon: " + name);
@@ -109,7 +128,7 @@ const NAV = [
 function fill(str) {
   return str
     .replace(/\{\{icon:([a-z-]+)\}\}/g, (_, n) => icon(n))
-    .replace(/\{\{(\w+)\}\}/g, (m, k) => (k === "year" ? String(new Date().getFullYear()) : k === "sms" ? "sms:" + SITE.phoneHref : k === "config" ? JSON.stringify(PUBLIC_CONFIG) : SITE[k] !== undefined ? SITE[k] : m));
+    .replace(/\{\{(\w+)\}\}/g, (m, k) => (k === "year" ? String(new Date().getFullYear()) : k === "sms" ? "sms:" + SITE.phoneHref : k === "config" ? JSON.stringify(PUBLIC_CONFIG) : k === "favicon" ? FAVICON : SITE[k] !== undefined ? SITE[k] : m));
 }
 
 function esc(s) {
@@ -120,38 +139,141 @@ function stripTags(s) {
   return s.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 }
 
-function faqSchema(body) {
+// Prices used in the structured data. Keep these in step with src/pages/services.html.
+const PRICING = {
+  packages: [
+    { name: "Starter website package", price: 997, description: "About 5 pages, mobile-first design, click-to-call and text buttons, quote form, Google Business Profile setup and basic on-page SEO." },
+    { name: "Standard website package", price: 1997, description: "About 10 pages with Google reviews on the site, an estimate or booking form, schema markup and leads sent into your CRM." },
+    { name: "Plus website package", price: 3497, description: "About 15 pages including up to 4 city pages, missed-call text-back and AI chatbot set up, and local SEO setup." }
+  ],
+  plans: [
+    { name: "Care monthly plan", price: 99, description: "Hosting and SSL, security updates, weekly backups, uptime monitoring and 1 small edit a month." },
+    { name: "Growth monthly plan", price: 397, description: "Everything in Care plus missed-call text-back, Google review requests, 4 Google Business Profile posts a month, call tracking, a monthly report and 2 small edits a month." }
+  ],
+  addons: [
+    { name: "AI chatbot / after-hours lead capture", setup: 397, monthly: 79 },
+    { name: "Missed-call text-back", setup: 197, monthly: 49 },
+    { name: "Review request automation", monthly: 59 },
+    { name: "Extra service or city page", price: 150 }
+  ]
+};
+
+const PAGE_TYPE = { home: "WebPage", services: "WebPage", process: "WebPage", about: "AboutPage", faq: "FAQPage", contact: "ContactPage" };
+
+function pageUrl(file) {
+  return SITE.url + "/" + (file === "index.html" ? "" : file);
+}
+
+function offer(item, extra) {
+  return Object.assign({ "@type": "Offer", priceCurrency: "USD", seller: { "@id": SITE.url + "/#business" } }, extra || {}, {
+    itemOffered: { "@type": "Service", name: item.name, description: item.description, serviceType: "Website design", provider: { "@id": SITE.url + "/#business" } }
+  });
+}
+
+function monthly(price) {
+  return { "@type": "UnitPriceSpecification", price: price, priceCurrency: "USD", unitCode: "MON", referenceQuantity: { "@type": "QuantitativeValue", value: 1, unitCode: "MON" } };
+}
+
+function offerCatalog() {
+  return {
+    "@type": "OfferCatalog",
+    name: "Website packages, monthly plans and add-ons",
+    itemListElement: [
+      { "@type": "OfferCatalog", name: "Website packages (one-time build)", itemListElement: PRICING.packages.map((p) => offer(p, { price: p.price })) },
+      { "@type": "OfferCatalog", name: "Monthly plans", itemListElement: PRICING.plans.map((p) => offer(p, { priceSpecification: monthly(p.price) })) },
+      { "@type": "OfferCatalog", name: "Add-ons", itemListElement: PRICING.addons.map((a) => {
+        const specs = [];
+        if (a.setup) specs.push({ "@type": "PriceSpecification", name: "Setup", price: a.setup, priceCurrency: "USD" });
+        if (a.monthly) specs.push(monthly(a.monthly));
+        return offer(a, a.price ? { price: a.price } : { priceSpecification: specs });
+      }) }
+    ]
+  };
+}
+
+function businessSchema() {
+  return {
+    "@type": "ProfessionalService",
+    "@id": SITE.url + "/#business",
+    name: SITE.brand,
+    description: SITE.tagline,
+    slogan: "Websites that make the phone ring",
+    url: SITE.url + "/",
+    telephone: SITE.phoneHref,
+    email: SITE.email,
+    priceRange: "$997 – $3,497",
+    currenciesAccepted: "USD",
+    areaServed: { "@type": "Country", name: "United States" },
+    audience: { "@type": "BusinessAudience", audienceType: "HVAC, plumbing and roofing companies" },
+    openingHoursSpecification: [{
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "08:00",
+      closes: "18:00"
+    }],
+    contactPoint: [{
+      "@type": "ContactPoint",
+      contactType: "sales",
+      telephone: SITE.phoneHref,
+      email: SITE.email,
+      areaServed: "US",
+      availableLanguage: "English"
+    }],
+    knowsAbout: ["HVAC website design", "Plumbing website design", "Roofing website design", "Local SEO", "Google Business Profile", "Missed-call text-back", "Lead capture"],
+    hasOfferCatalog: offerCatalog()
+  };
+}
+
+function faqItems(body) {
   const re = /<details class="faq"[^>]*>\s*<summary>([\s\S]*?)<\/summary>\s*<div class="answer">([\s\S]*?)<\/div>\s*<\/details>/g;
   const items = [];
   let m;
   while ((m = re.exec(body))) {
     items.push({ "@type": "Question", name: stripTags(m[1]), acceptedAnswer: { "@type": "Answer", text: stripTags(m[2]) } });
   }
-  return { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: items };
+  return items;
 }
 
-function orgSchema() {
-  return {
-    "@context": "https://schema.org",
-    "@type": "ProfessionalService",
-    name: SITE.brand,
-    description: SITE.tagline,
-    url: SITE.url,
-    telephone: SITE.phone,
-    email: SITE.email,
-    priceRange: "$1,497 – $9,997+",
-    areaServed: "US",
-    knowsAbout: ["HVAC website design", "Plumbing website design", "Roofing website design", "Local SEO", "Google Business Profile"]
+// One JSON-LD graph per page: the business, the website, this page and its breadcrumb trail.
+function pageSchema(meta, body) {
+  const url = pageUrl(meta.file);
+  const page = {
+    "@type": PAGE_TYPE[meta.nav] || "WebPage",
+    "@id": url + "#webpage",
+    url: url,
+    name: meta.title,
+    description: meta.description,
+    isPartOf: { "@id": SITE.url + "/#website" },
+    about: { "@id": SITE.url + "/#business" },
+    inLanguage: "en-US"
   };
+  const graph = [
+    businessSchema(),
+    { "@type": "WebSite", "@id": SITE.url + "/#website", url: SITE.url + "/", name: SITE.brand, publisher: { "@id": SITE.url + "/#business" }, inLanguage: "en-US" },
+    page
+  ];
+  if (meta.nav !== "home") {
+    const navItem = NAV.find((n) => n.key === meta.nav);
+    page.breadcrumb = { "@id": url + "#breadcrumb" };
+    graph.push({
+      "@type": "BreadcrumbList",
+      "@id": url + "#breadcrumb",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: SITE.url + "/" },
+        { "@type": "ListItem", position: 2, name: navItem ? navItem.label : meta.title, item: url }
+      ]
+    });
+  }
+  if (meta.nav === "faq") page.mainEntity = faqItems(body);
+  if (meta.nav === "services") page.mainEntity = { "@id": SITE.url + "/#business" };
+  return { "@context": "https://schema.org", "@graph": graph };
 }
 
 function layout(meta, body) {
   const navItems = NAV.map((n) => `<li><a href="${n.href}"${n.key === meta.nav ? ' aria-current="page"' : ""}>${n.label}</a></li>`).join("\n          ");
   const drawerItems = NAV.map((n) => `<li><a href="${n.href}"${n.key === meta.nav ? ' aria-current="page"' : ""}>${n.label}${icon("arrow")}</a></li>`).join("\n          ");
-  const schemas = [];
-  if (meta.nav === "home") schemas.push(orgSchema());
-  if (meta.nav === "faq") schemas.push(faqSchema(body));
-  const schemaTags = schemas.map((s) => `<script type="application/ld+json">${JSON.stringify(s)}</script>`).join("\n  ");
+  // "</" is escaped so text inside the JSON can never close the script tag.
+  const schemaTags = `<script type="application/ld+json">${JSON.stringify(pageSchema(meta, body)).replace(/<\//g, "<\\/")}</script>`;
 
   return `<!doctype html>
 <html lang="en">
@@ -166,7 +288,7 @@ function layout(meta, body) {
   <meta property="og:title" content="${esc(meta.title)}">
   <meta property="og:description" content="${esc(meta.description)}">
   <meta property="og:url" content="${SITE.url}/${meta.file === "index.html" ? "" : meta.file}">
-  <link rel="icon" href="data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#3b1812"/><g transform="translate(4 4)" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' + ICONS.logo + "</g></svg>")}">
+  <link rel="icon" href="${FAVICON}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -260,9 +382,31 @@ ${body}
     <a class="btn btn-primary" href="contact.html">${icon("message")}Free quote</a>
   </div>
 
+  <div class="chat" data-chat>
+    <button class="chat-launcher" type="button" aria-expanded="false" aria-controls="chat-panel">${icon("message")}<span>Questions? Chat with us</span></button>
+    <section class="chat-panel" id="chat-panel" role="dialog" aria-modal="false" aria-labelledby="chat-title" hidden>
+      <header class="chat-head">
+        <span class="chat-avatar">${icon("bot")}</span>
+        <div class="chat-head-text">
+          <p class="chat-title" id="chat-title">${esc(SITE.brand)} assistant</p>
+          <p class="chat-sub"><span class="chat-dot" aria-hidden="true"></span>Instant answers, a real person anytime</p>
+        </div>
+        <button class="chat-close" type="button" aria-label="Close chat">${icon("x")}</button>
+      </header>
+      <div class="chat-log" role="log" aria-live="polite" aria-label="Chat messages"></div>
+      <div class="chat-chips" aria-label="Suggested questions"></div>
+      <form class="chat-form" novalidate>
+        <label class="sr-only" for="chat-input">Type your message</label>
+        <input id="chat-input" type="text" autocomplete="off" maxlength="500" placeholder="Ask about prices, timelines…">
+        <button type="submit" aria-label="Send message">${icon("arrow")}</button>
+      </form>
+    </section>
+  </div>
+
   <script>window.SITE_CONFIG = ${JSON.stringify(PUBLIC_CONFIG)};</script>
   <script src="assets/leads.js"></script>
   <script src="assets/site.js"></script>
+  <script src="assets/chat.js"></script>
 </body>
 </html>
 `;

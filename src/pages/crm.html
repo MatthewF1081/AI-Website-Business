@@ -7,6 +7,7 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Lead CRM | {{brand}}</title>
   <meta name="theme-color" content="#3b1812">
+  <link rel="icon" href="{{favicon}}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -23,6 +24,7 @@
         <span class="crm-title">Lead CRM</span>
       </a>
       <div class="crm-top-actions" id="top-actions" hidden>
+        <a class="btn btn-outline btn-sm" href="briefs.html"><span>Client briefs</span></a>
         <button class="btn btn-outline btn-sm" type="button" id="signout-btn" hidden><span>Sign out</span></button>
         <button class="btn btn-outline btn-sm" type="button" id="export-btn">{{icon:download}}<span class="hide-sm">Export CSV</span><span class="sr-only show-sm-sr">Export CSV</span></button>
         <button class="btn btn-accent btn-sm" type="button" id="add-btn">{{icon:plus}}Add lead</button>
@@ -110,14 +112,16 @@
       </select>
       <label for="f-pkg" class="sr-only">Filter by package</label>
       <select id="f-pkg">
-        <option value="">All packages</option>
-        <option>Launch</option>
-        <option>Growth</option>
-        <option>Pro</option>
-        <option>Custom AI System</option>
-        <option>Care</option>
-        <option>Leads</option>
-        <option>Dominate</option>
+        <option value="">All packages &amp; plans</option>
+        <optgroup label="Website packages">
+          <option>Starter</option>
+          <option>Standard</option>
+          <option>Plus</option>
+        </optgroup>
+        <optgroup label="Monthly plans">
+          <option>Care</option>
+          <option>Growth</option>
+        </optgroup>
       </select>
       <div class="seg" role="group" aria-label="View">
         <button type="button" data-view="board" aria-pressed="true">{{icon:columns}}<span>Board</span></button>
@@ -182,10 +186,22 @@
           <div class="field"><label for="l-email">Email</label><input id="l-email" name="email" type="email" autocomplete="off"></div>
           <div class="field"><label for="l-trade">Trade</label>
             <select id="l-trade" name="trade"><option value="">—</option><option>HVAC</option><option>Plumbing</option><option>Roofing</option><option>Other</option></select></div>
-          <div class="field"><label for="l-package">Package</label>
-            <select id="l-package" name="package"><option value="">Not sure yet</option><option>Launch</option><option>Growth</option><option>Pro</option><option>Custom AI System</option><option>Care</option><option>Leads</option><option>Dominate</option></select></div>
+          <div class="field"><label for="l-package">Website package <span class="muted small">(one-time)</span></label>
+            <select id="l-package" name="package"><option value="">Not sure yet</option><option>Starter</option><option>Standard</option><option>Plus</option></select></div>
+          <div class="field"><label for="l-plan">Monthly plan</label>
+            <select id="l-plan" name="plan"><option value="">Not sure yet</option><option>None</option><option>Care</option><option>Growth</option></select></div>
+          <fieldset class="field full crm-addons">
+            <legend>Add-ons</legend>
+            <div class="crm-addon-grid">
+              <label><input type="checkbox" name="addon" value="AI chatbot / after-hours capture"> AI chatbot / after-hours capture</label>
+              <label><input type="checkbox" name="addon" value="Missed-call text-back"> Missed-call text-back</label>
+              <label><input type="checkbox" name="addon" value="Review request automation"> Review request automation</label>
+              <label><input type="checkbox" name="addon" value="Extra service or city pages"> Extra service or city pages</label>
+              <label><input type="checkbox" name="addon" value="Rush build"> Rush build</label>
+            </div>
+          </fieldset>
           <div class="field"><label for="l-stage">Stage</label><select id="l-stage" name="stage"></select></div>
-          <div class="field"><label for="l-value">Deal value ($)</label><input id="l-value" name="value" type="number" min="0" step="1" inputmode="numeric"><span class="hint">Auto-fills from the package (monthly plans use 12 months). Edit if needed.</span></div>
+          <div class="field"><label for="l-value">Deal value ($)</label><input id="l-value" name="value" type="number" min="0" step="1" inputmode="numeric"><span class="hint">Auto-fills: package price + 12 months of the plan. Edit if needed.</span></div>
           <div class="field"><label for="l-area">Service area</label><input id="l-area" name="serviceArea" type="text" autocomplete="off"></div>
           <div class="field"><label for="l-followup">Follow-up date</label><input id="l-followup" name="followUp" type="date"></div>
           <div class="field full"><label for="l-message">Request / details</label><textarea id="l-message" name="message" rows="3"></textarea></div>

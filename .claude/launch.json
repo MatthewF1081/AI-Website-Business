@@ -6,6 +6,18 @@
       "runtimeExecutable": "node",
       "runtimeArgs": ["serve.js"],
       "port": 5173
+    },
+    {
+      "name": "questionnaire",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["C:/Users/matth/OneDrive/Desktop/Questionaire Website/serve.js"],
+      "port": 5174
+    },
+    {
+      "name": "shadid-site",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["clients/shadid-heat-and-air/serve.js"],
+      "port": 5175
     }
   ]
 }

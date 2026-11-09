@@ -1,0 +1,83 @@
+<!--{"nav":"onboarding","standalone":true}-->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Website Questionnaire | {{brand}}</title>
+  <meta name="description" content="Tell us about your business, services, images and content so we can build your new website.">
+  <meta name="theme-color" content="#3b1812">
+  <link rel="icon" href="{{favicon}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="assets/onboarding.css">
+</head>
+<body class="ob-body">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="ob-top">
+    <div class="ob-top-inner">
+      <span class="logo"><span class="logo-mark">{{icon:logo}}</span><span>{{brand}}</span></span>
+      <a class="ob-help" href="tel:{{phoneHref}}">{{icon:phone}}<span>Questions? {{phone}}</span></a>
+    </div>
+  </header>
+
+  <main id="main" class="ob-main">
+    <section class="ob-intro" id="ob-intro">
+      <span class="eyebrow">Website questionnaire</span>
+      <h1 id="ob-heading">Let's plan your new website</h1>
+      <p class="lead">Tell us about your business, your services, the images you want and what your customers should see. It takes about 15 minutes, and your answers save as you go on this device.</p>
+      <ul class="ob-facts">
+        <li>{{icon:clock}}<span>About 15 minutes</span></li>
+        <li>{{icon:refresh}}<span>Saves as you go</span></li>
+        <li>{{icon:lock}}<span>Only our team sees it</span></li>
+      </ul>
+    </section>
+
+    <nav class="ob-steps" aria-label="Questionnaire steps">
+      <ol id="ob-steps"></ol>
+    </nav>
+
+    <form class="form-card ob-form" id="ob-form" novalidate>
+      <div id="ob-panels"></div>
+
+      <section class="ob-panel" id="panel-review" data-step="review" hidden aria-labelledby="review-title">
+        <h2 id="review-title" tabindex="-1">Check and send</h2>
+        <p class="muted">Have a quick look over your answers. Tap "Edit" to change anything.</p>
+        <div id="ob-review"></div>
+        <label class="addon ob-consent">
+          <input type="checkbox" id="consent" required>
+          <span class="addon-name">I'm happy for {{brand}} to use these details, words and images to build my website.</span>
+        </label>
+        <div style="position:absolute;left:-9999px" aria-hidden="true">
+          <label for="company_hp">Leave this empty</label>
+          <input id="company_hp" type="text" tabindex="-1" autocomplete="off">
+        </div>
+      </section>
+
+      <div class="form-status" id="ob-status" role="alert" tabindex="-1"></div>
+
+      <div class="ob-nav">
+        <button class="btn btn-outline" type="button" id="ob-back">Back</button>
+        <span class="ob-count muted small" id="ob-count" aria-live="polite"></span>
+        <button class="btn btn-primary" type="submit" id="ob-next">Next {{icon:arrow}}</button>
+      </div>
+    </form>
+
+    <section class="ob-done" id="ob-done" hidden aria-labelledby="done-title">
+      <span class="icon-badge">{{icon:check-circle}}</span>
+      <h1 id="done-title" tabindex="-1">Thank you, we've got it</h1>
+      <p class="lead">Your answers and images are with our team. We'll review everything and be in touch within one business day.</p>
+      <p class="muted">Forgot something? Call or text <a href="tel:{{phoneHref}}">{{phone}}</a> or email <a href="mailto:{{email}}">{{email}}</a>.</p>
+    </section>
+  </main>
+
+  <script>window.SITE_CONFIG = {{config}};</script>
+  <script>window.OB_ICONS = { upload: `{{icon:upload}}`, x: `{{icon:x}}`, plus: `{{icon:plus}}`, error: `{{icon:x}}`, check: `{{icon:check}}`, arrow: `{{icon:arrow}}`, pencil: `{{icon:pencil}}` };</script>
+  <script src="assets/brief-questions.js"></script>
+  <script src="assets/onboarding.js"></script>
+</body>
+</html>

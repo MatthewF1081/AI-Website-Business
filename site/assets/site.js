@@ -67,15 +67,19 @@
 
   /* ---------- Pre-select package from ?package= ---------- */
   var params = new URLSearchParams(location.search);
+  // ?package= can name a website package or a monthly plan; pick it in whichever dropdown has it.
   var pkg = params.get("package");
   if (pkg) {
-    var sel = document.querySelector('select[name="package"]');
-    if (sel) {
+    document.querySelectorAll('select[name="package"], select[name="plan"]').forEach(function (sel) {
       for (var i = 0; i < sel.options.length; i++) {
-        if (sel.options[i].value.toLowerCase() === pkg.toLowerCase()) sel.selectedIndex = i;
+        if (sel.options[i].value && sel.options[i].value.toLowerCase() === pkg.toLowerCase()) sel.selectedIndex = i;
       }
-    }
+    });
   }
+
+  // ?offer=founding (from the Services page) ticks the founding-client checkbox.
+  var founding = document.getElementById("founding");
+  if (founding && params.get("offer") === "founding") founding.checked = true;
 
   /* ---------- Lead forms ---------- */
   var ERR_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>';
@@ -137,10 +141,12 @@
         phone: (fd.get("phone") || "").trim(),
         trade: trades.join(", "),
         package: fd.get("package") || "",
+        plan: fd.get("plan") || "",
+        addons: fd.getAll("addon").join(", "),
         website: (fd.get("website") || "").trim(),
         serviceArea: (fd.get("area") || "").trim(),
         timeline: fd.get("timeline") || "",
-        message: (fd.get("message") || "").trim(),
+        message: (fd.get("founding") ? "[Founding client offer] " : "") + (fd.get("message") || "").trim(),
         source: form.dataset.leadForm || "website"
       };
 
@@ -179,6 +185,48 @@
         status.focus();
       });
     });
+  });
+
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- Rotating headline word ---------- */
+  var rotator = document.querySelector("[data-rotator]");
+  if (rotator && !reduceMotion) {
+    var words = rotator.children;
+    var wi = 0;
+    setInterval(function () {
+      if (document.hidden) return;
+      words[wi].classList.remove("is-active");
+      wi = (wi + 1) % words.length;
+      words[wi].classList.add("is-active");
+    }, 2600);
+  }
+
+  /* ---------- Services ticker pause ---------- */
+  var ticker = document.querySelector("[data-ticker]");
+  if (ticker) {
+    var tBtn = ticker.querySelector(".ticker-toggle");
+    var pauseIcon = tBtn.innerHTML;
+    var playIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg>';
+    tBtn.addEventListener("click", function () {
+      var paused = ticker.classList.toggle("paused");
+      tBtn.setAttribute("aria-pressed", String(paused));
+      tBtn.setAttribute("aria-label", paused ? "Play scrolling services" : "Pause scrolling services");
+      tBtn.innerHTML = paused ? playIcon : pauseIcon;
+    });
+  }
+
+  /* ---------- Before / after slider ---------- */
+  document.querySelectorAll("[data-ba]").forEach(function (ba) {
+    var range = ba.querySelector(".ba-range");
+    function update() {
+      var v = Number(range.value);
+      ba.style.setProperty("--pos", v + "%");
+      range.setAttribute("aria-valuetext",
+        v <= 5 ? "Showing the new website" : v >= 95 ? "Showing the old website" : v + "% old website, " + (100 - v) + "% new website");
+    }
+    range.addEventListener("input", update);
+    update();
   });
 
   /* ---------- FAQ search ---------- */

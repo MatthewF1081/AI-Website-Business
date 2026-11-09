@@ -19,6 +19,8 @@ create table if not exists public.leads (
   phone        text check (char_length(phone) <= 40),
   trade        text check (char_length(trade) <= 100),
   package      text check (char_length(package) <= 60),
+  plan         text check (char_length(plan) <= 60),
+  addons       text check (char_length(addons) <= 500),
   website      text check (char_length(website) <= 500),
   service_area text check (char_length(service_area) <= 200),
   timeline     text check (char_length(timeline) <= 100),
@@ -29,6 +31,10 @@ create table if not exists public.leads (
   follow_up    date,
   notes        jsonb not null default '[]'::jsonb
 );
+
+-- Databases created before plan/add-ons existed get the columns here.
+alter table public.leads add column if not exists plan text check (char_length(plan) <= 60);
+alter table public.leads add column if not exists addons text check (char_length(addons) <= 500);
 
 create index if not exists leads_created_at_idx on public.leads (created_at desc);
 
@@ -89,3 +95,5 @@ end $$;
 
 -- LAST STEP: add your team's login emails (lowercase), then run this line.
 -- insert into public.team_members (email) values ('you@yourcompany.com') on conflict do nothing;
+
+-- Client website questionnaire: run supabase/add-client-briefs.sql next.
